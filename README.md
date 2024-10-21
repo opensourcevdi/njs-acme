@@ -142,6 +142,18 @@ You will need to remove the staging certificate from your NGINX server's filesys
         default: acme`
         ```
 
+   - `NJS_ACME_EAB_KID` (env)\
+     `$njs_acme_eab_kid` (js_var)\
+        Your external account binding key identifier to send to the ACME provider.\
+        value: Any string\
+        default: none (do not use external account binding)
+
+   - `NJS_ACME_EAB_HMAC_KEY` (env)\
+     `$njs_acme_eab_hmac_key` (js_var)\
+        Your external account binding MAC key to send to the ACME provider.\
+        value: A base64 or base64url encoded value\
+        default: none (you must specify this if `NJS_ACME_EAB_KID` or `$njs_acme_eab_kid` is set!)
+
 ## NGINX Configuration
 
 There are a few pieces that are required to be present in your `nginx.conf` file. The file at [`examples/nginx.conf`](./examples/nginx.conf) shows them all.

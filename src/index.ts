@@ -101,6 +101,25 @@ async function clientAutoModeInternal(
     return retVal
   }
 
+  let externalAccountBinding
+  const kid = getVariable(r, 'njs_acme_eab_kid', '')
+  if (kid) {
+    try {
+      // njs_acme_eab_hmac_key can be base64 or base64url encoded, hmacKey is base64 encoded
+      const hmacKey = getVariable(r, 'njs_acme_eab_hmac_key')
+        .replaceAll('-', '+')
+        .replaceAll('_', '/')
+      externalAccountBinding = {
+        kid,
+        hmacKey,
+      }
+    } catch {
+      retVal.info.error =
+        "Nginx variable '$njs_acme_eab_hmac_key' or 'NJS_ACME_EAB_HMAC_KEY' environment variable must be set if '$njs_acme_eab_kid' or 'NJS_ACME_EAB_KID' is set"
+      return retVal
+    }
+  }
+
   let certificatePem
   let pkeyPem
   let renewCertificate = false
@@ -153,6 +172,7 @@ async function clientAutoModeInternal(
     const client = new AcmeClient({
       directoryUrl: acmeDirectoryURI(r),
       accountKey: accountKey,
+      externalAccountBinding,
     })
     client.api.setVerify(acmeVerifyProviderHTTPS(r))
 

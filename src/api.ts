@@ -315,7 +315,7 @@ export class HttpClient {
 
         // FIXME
         if (payload) {
-          payload.externalAccountBinding = this.createSignedHmacBody(
+          payload.externalAccountBinding = await this.createSignedHmacBody(
             eabHmacKey,
             url,
             jwk,
