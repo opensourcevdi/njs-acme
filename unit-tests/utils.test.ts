@@ -13,11 +13,11 @@ describe('utils', () => {
       assert(isValidHostname('a-z.123'))
       assert(isValidHostname('a.'.repeat(100)))
       assert(isValidHostname('a'.repeat(61) + '.com'))
+      assert(isValidHostname('*.nginx.com'))
     })
     it('returns false for invalid names', () => {
       assert(!isValidHostname('.com'))
       assert(!isValidHostname('.foobarbaz'))
-      assert(!isValidHostname('*.nginx.com'))
       assert(!isValidHostname('-5guys.'))
       assert(!isValidHostname('5guys-'))
       assert(!isValidHostname('domäin.'))
@@ -48,6 +48,8 @@ describe('utils', () => {
         'foo.,bar.': 2,
         'foo.\tbar.': 2,
         'foo.        bar.': 2,
+        '*.bar.baz': 1,
+        'foo.bar.baz *.baz': 2,
       }
 
       for (const [names, expected] of Object.entries(testCases)) {
@@ -62,12 +64,7 @@ describe('utils', () => {
           njs_acme_server_names: null,
         },
       } as unknown as NginxHTTPRequest
-      for (const name of [
-        'nginx-.com',
-        '*.bar.baz',
-        'foo.bar.baz *.baz',
-        '-foo. bar. baz.',
-      ]) {
+      for (const name of ['nginx-.com', '-foo. bar. baz.']) {
         r.variables.njs_acme_server_names = name
         assert.throws(() => acmeServerNames(r))
       }

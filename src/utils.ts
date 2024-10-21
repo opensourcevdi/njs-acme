@@ -964,7 +964,8 @@ export function isValidHostname(hostname: string): boolean {
     !!hostname.match(
       // hostnames are dot-separated groups of letters, numbers, hyphens (but
       // not beginning or ending with hyphens), and may end with a period
-      /^[a-z\d]([-a-z\d]{0,61}[a-z\d])?(\.[a-z\d]([-a-z\d]{0,61}[a-z\d])?)*\.?$/i
+      // and start with a * as a wildcard domain
+      /^(\*\.)?[a-z\d]([-a-z\d]{0,61}[a-z\d])?(\.[a-z\d]([-a-z\d]{0,61}[a-z\d])?)*\.?$/i
     )
   )
 }
